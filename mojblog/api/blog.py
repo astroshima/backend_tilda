@@ -1,6 +1,6 @@
 from freenit.api.methodviews import MethodView
 from flask_smorest import Blueprint
-from ..schemas.blog import BlogPostSchema
+from ..schemas.blog_post import BlogPostSchema
 
 blueprint = Blueprint('blogs', 'blogs')
 
