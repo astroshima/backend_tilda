@@ -5,7 +5,7 @@ from ..schemas.blog_post import BlogPostSchema
 blueprint = Blueprint('blogs', 'blogs')
 
 @blueprint.route('', endpoint='blog')
-class BlogPostListAPI(MethodView):
+class CreateBlogPostAPI(MethodView):
     @blueprint.response(BlogPostSchema)
     @blueprint.arguments(BlogPostSchema)
     def post(self, args):
