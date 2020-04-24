@@ -9,8 +9,17 @@ blueprint = Blueprint('blogpost', 'blogpost')
 
 @blueprint.route('', endpoint='create_blog_post')
 class CreateBlogPostAPI(MethodView):
+    @jwt_required
     @blueprint.response(BlogPostSchema)
     @blueprint.arguments(BlogPostSchema)
     def post(self, args):
         '''Create blog post'''
-        return args
+        blogPost = BlogPost(**args)
+        userId = get_jwt_identity()
+        try:
+            user = User.get(id=userId)
+        except User.DoesNotExist:
+            abort(404, message='User not found')
+        blogPost.author = user
+        blogPost.save()
+        return blogPost
