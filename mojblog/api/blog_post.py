@@ -5,7 +5,7 @@ from ..schemas.blog_post import BlogPostSchema
 from ..models.blog_post import BlogPost
 from ..models.user import User
 
-blueprint = Blueprint('blogPost', 'blogPost')
+blueprint = Blueprint('blogpost', 'blogpost')
 
 @blueprint.route('', endpoint='create_blog_post')
 class CreateBlogPostAPI(MethodView):
