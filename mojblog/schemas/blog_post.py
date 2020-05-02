@@ -1,3 +1,4 @@
+import sys
 from freenit.schemas.base import BaseSchema
 from freenit.schemas.paging import PageOutSchema
 from freenit.schemas.user import UserSchema
@@ -12,3 +13,5 @@ class BlogPostSchema(BaseSchema):
         description='Time when blog post was created',
         dump_only=True,
     )
+
+PageOutSchema(BlogPostSchema, sys.modules[__name__])
