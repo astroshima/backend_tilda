@@ -1,7 +1,7 @@
 import datetime
 from freenit.db import db
-from .user import User
 from peewee import DateTimeField, ForeignKeyField, TextField
+from .user import User
 
 Model = db.Model
 
