@@ -1,6 +1,6 @@
-from freenit.api.methodviews import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity, jwt_optional
+from freenit.api.methodviews import MethodView
 from freenit.schemas.paging import PageInSchema, paginate
 from ..schemas.blog_post import BlogPostSchema, PageOutSchema
 from ..models.blog_post import BlogPost
@@ -24,3 +24,5 @@ class CreateBlogPostAPI(MethodView):
         blogPost.author = user
         blogPost.save()
         return blogPost
+
+
