@@ -25,4 +25,16 @@ class CreateBlogPostAPI(MethodView):
         blogPost.save()
         return blogPost
 
-
+@blueprint.route('', endpoint='list_blog_posts')
+class ListBlogPostsAPI(MethodView):
+    @jwt_optional
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema)
+    def get(self, pagination):
+        '''List blog posts'''
+        userId = get_jwt_identity()
+        if userId is None:
+            query = BlogPost.select().where(BlogPost.published)
+        else:
+            query = BlogPost.select()
+        return paginate(query, pagination)
