@@ -2,7 +2,7 @@ from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity, jwt_optional
 from freenit.api.methodviews import MethodView
 from freenit.schemas.paging import PageInSchema, paginate
-from ..schemas.blog_post import BlogPostSchema, PageOutSchema
+from ..schemas.blog_post import BlogPostSchema, BlogPostPageOutSchema
 from ..models.blog_post import BlogPost
 from ..models.user import User
 
@@ -27,14 +27,14 @@ class CreateBlogPostAPI(MethodView):
 
 @blueprint.route('', endpoint='list_blog_posts')
 class ListBlogPostsAPI(MethodView):
-    @jwt_optional
+#    @jwt_optional
     @blueprint.arguments(PageInSchema(), location='headers')
-    @blueprint.response(PageOutSchema)
+    @blueprint.response(BlogPostPageOutSchema)
     def get(self, pagination):
         '''List blog posts'''
-        userId = get_jwt_identity()
-        if userId is None:
-            query = BlogPost.select().where(BlogPost.published)
-        else:
-            query = BlogPost.select()
+        #userId = get_jwt_identity()
+        #if userId is None:
+        #    query = BlogPost.select().where(BlogPost.published)
+        #else:
+        query = BlogPost.select()
         return paginate(query, pagination)
