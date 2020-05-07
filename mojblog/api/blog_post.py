@@ -49,3 +49,19 @@ class GetBlogPostAPI(MethodView):
         except BlogPost.DoesNotExist:
             abort(404, message='Blog post not found')
         return blogPost
+
+@blueprint.route('/<blogPostId>', endpoint='edit_blog_post')
+class EditBlogPostAPI(MethodView):
+    @jwt_required
+    @blueprint.arguments(BlogPostSchema(partial=True))
+    @blueprint.response(BlogPostSchema)
+    def patch(self, args, blogPostId):
+        '''Edit blog post'''
+        try:
+            blogPost = BlogPost.get(id=blogPostId)
+        except BlogPost.DoesNotExist:
+            abort(404, message='Blog post not found')
+        for field in args:
+            setattr(blogPost, field, args[field])
+        blogPost.save()
+        return blogPost
