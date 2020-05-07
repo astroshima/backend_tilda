@@ -38,3 +38,14 @@ class ListBlogPostsAPI(MethodView):
 #        else:
         query = BlogPost.select()
         return paginate(query, pagination)
+
+@blueprint.route('/<blogPostId>', endpoint='get_blog_post')
+class GetBlogPostAPI(MethodView):
+    @blueprint.response(BlogPostSchema)
+    def get(self, blogPostId):
+        '''Get blog post'''
+        try:
+            blogPost = BlogPost.get(id = blogPostId)
+        except BlogPost.DoesNotExist:
+            abort(404, message='Blog post not found')
+        return blogPost
