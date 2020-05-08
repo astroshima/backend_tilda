@@ -69,7 +69,7 @@ class EditBlogPostAPI(MethodView):
 @blueprint.route('/<blogPostId>', methods=['DELETE'], endpoint='delete_blog_post')
 @jwt_required
 @blueprint.response(BlogPostSchema)
-def deleteBlogPost(self, blogPostId):
+def deleteBlogPost(blogPostId):
     '''Delete blog post'''
     try:
         blogPost = BlogPost.get(id = blogPostId)
