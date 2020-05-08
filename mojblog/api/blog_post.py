@@ -67,17 +67,16 @@ class EditBlogPostAPI(MethodView):
         return blogPost
 
 @blueprint.route('/<blogPostId>', methods=['DELETE'], endpoint='delete_blog_post')
-class DeleteBlogPostAPI(MethodView):
-    @jwt_required
-    @blueprint.response(BlogPostSchema)
-    def deleteBlogPost(self, blogPostId):
-        '''Delete blog post'''
-        try:
-            blogPost = BlogPost.get(id = blogPostId)
-        except BlogPost.DoesNotExist:
-            abort(404, message='Blog post not found')
-        blogPost.delete_instance()
-        return blogPost
+@jwt_required
+@blueprint.response(BlogPostSchema)
+def deleteBlogPost(self, blogPostId):
+    '''Delete blog post'''
+    try:
+        blogPost = BlogPost.get(id = blogPostId)
+    except BlogPost.DoesNotExist:
+        abort(404, message='Blog post not found')
+    blogPost.delete_instance()
+    return blogPost
 
 
         
