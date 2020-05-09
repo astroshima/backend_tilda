@@ -8,63 +8,59 @@ from ..models.user import User
 
 blueprint = Blueprint('blogpost', 'blogpost')
 
-@blueprint.route('', endpoint='create_blog_post')
-class CreateBlogPostAPI(MethodView):
-    @jwt_required
-    @blueprint.response(BlogPostSchema)
-    @blueprint.arguments(BlogPostSchema)
-    def post(self, args):
-        '''Create blog post'''
-        blogPost = BlogPost(**args)
-        userId = get_jwt_identity()
-        try:
-            user = User.get(id=userId)
-        except User.DoesNotExist:
-            abort(404, message='User not found')
-        blogPost.author = user
-        blogPost.save()
-        return blogPost
+@blueprint.route('', methods=['POST'], endpoint='create_blog_post')
+@jwt_required
+@blueprint.response(BlogPostSchema)
+@blueprint.arguments(BlogPostSchema)
+def createBlogPost(args):
+    '''Create blog post'''
+    blogPost = BlogPost(**args)
+    userId = get_jwt_identity()
+    try:
+        user = User.get(id=userId)
+    except User.DoesNotExist:
+        abort(404, message='User not found')
+    blogPost.author = user
+    blogPost.save()
+    return blogPost
 
-@blueprint.route('', endpoint='list_blog_posts')
-class ListBlogPostsAPI(MethodView):
-#    @jwt_optional
-    @blueprint.arguments(PageInSchema(), location='headers')
-    @blueprint.response(BlogPostPageOutSchema)
-    def get(self, pagination):
-        '''List blog posts'''
-#        userId = get_jwt_identity()
-#        if userId is None:
-#            query = BlogPost.select().where(BlogPost.published)
-#        else:
-        query = BlogPost.select()
-        return paginate(query, pagination)
+@blueprint.route('', methods=['GET'], endpoint='list_blog_posts')
+#@jwt_optional
+@blueprint.arguments(PageInSchema(), location='headers')
+@blueprint.response(BlogPostPageOutSchema)
+def listBlogPosts(pagination):
+    '''List blog posts'''
+#    userId = get_jwt_identity()
+#    if userId is None:
+#        query = BlogPost.select().where(BlogPost.published)
+#    else:
+    query = BlogPost.select()
+    return paginate(query, pagination)
 
-@blueprint.route('/<blogPostId>', endpoint='get_blog_post')
-class GetBlogPostAPI(MethodView):
-    @blueprint.response(BlogPostSchema)
-    def get(self, blogPostId):
-        '''Get blog post'''
-        try:
-            blogPost = BlogPost.get(id = blogPostId)
-        except BlogPost.DoesNotExist:
-            abort(404, message='Blog post not found')
-        return blogPost
+@blueprint.route('/<blogPostId>', methods=['GET'], endpoint='get_blog_post')
+@blueprint.response(BlogPostSchema)
+def getBlogPost(blogPostId):
+    '''Get blog post'''
+    try:
+        blogPost = BlogPost.get(id = blogPostId)
+    except BlogPost.DoesNotExist:
+        abort(404, message='Blog post not found')
+    return blogPost
 
-@blueprint.route('/<blogPostId>', endpoint='edit_blog_post')
-class EditBlogPostAPI(MethodView):
-    @jwt_required
-    @blueprint.arguments(BlogPostSchema(partial=True))
-    @blueprint.response(BlogPostSchema)
-    def patch(self, args, blogPostId):
-        '''Edit blog post'''
-        try:
-            blogPost = BlogPost.get(id=blogPostId)
-        except BlogPost.DoesNotExist:
-            abort(404, message='Blog post not found')
-        for field in args:
-            setattr(blogPost, field, args[field])
-        blogPost.save()
-        return blogPost
+@blueprint.route('/<blogPostId>', methods=['PATCH'], endpoint='edit_blog_post')
+@jwt_required
+@blueprint.arguments(BlogPostSchema(partial=True))
+@blueprint.response(BlogPostSchema)
+def editBlogPost(args, blogPostId):
+    '''Edit blog post'''
+    try:
+        blogPost = BlogPost.get(id=blogPostId)
+    except BlogPost.DoesNotExist:
+        abort(404, message='Blog post not found')
+    for field in args:
+        setattr(blogPost, field, args[field])
+    blogPost.save()
+    return blogPost
 
 @blueprint.route('/<blogPostId>', methods=['DELETE'], endpoint='delete_blog_post')
 @jwt_required
@@ -77,7 +73,3 @@ def deleteBlogPost(blogPostId):
         abort(404, message='Blog post not found')
     blogPost.delete_instance()
     return blogPost
-
-
-        
-
