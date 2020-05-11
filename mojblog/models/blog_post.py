@@ -14,3 +14,8 @@ class BlogPost(Model):
     )
     author = ForeignKeyField(User, backref='blogpost')
     published = BooleanField()
+
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            self.slug = self.title.lower().replace(" ", "-")
+        super(BlogPost, self).save(*args, **kwargs)

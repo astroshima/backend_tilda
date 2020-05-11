@@ -49,10 +49,12 @@ def migrate(migrator, database, fake=False, **kwargs):
     @migrator.create_model
     class BlogPost(pw.Model):
         id = pw.AutoField()
+        slug = pw.TextField()
         title = pw.TextField()
         content = pw.TextField()
         date = pw.DateTimeField()
         author = pw.ForeignKeyField(backref='blogpost', column_name='author_id', field='id', model=migrator.orm['users'])
+        published = pw.BooleanField()
 
         class Meta:
             table_name = "blogpost"

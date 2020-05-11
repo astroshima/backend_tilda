@@ -78,7 +78,3 @@ class DeleteBlogPostAPI(MethodView):
             abort(404, message='Blog post not found')
         blogPost.delete_instance()
         return blogPost
-
-
-        
-
