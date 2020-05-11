@@ -18,7 +18,7 @@ class CreateBlogPostAPI(MethodView):
         blogPost = BlogPost(**args)
         userId = get_jwt_identity()
         try:
-            user = User.get(id=userId)
+            user = User.get(id = userId)
         except User.DoesNotExist:
             abort(404, message='User not found')
         blogPost.author = user
@@ -39,26 +39,26 @@ class ListBlogPostsAPI(MethodView):
         query = BlogPost.select()
         return paginate(query, pagination)
 
-@blueprint.route('/<blogPostId>', endpoint='get_blog_post')
+@blueprint.route('/<slug>', endpoint='get_blog_post')
 class GetBlogPostAPI(MethodView):
     @blueprint.response(BlogPostSchema)
-    def get(self, blogPostId):
+    def get(self, slug):
         '''Get blog post'''
         try:
-            blogPost = BlogPost.get(id = blogPostId)
+            blogPost = BlogPost.get(slug = slug)
         except BlogPost.DoesNotExist:
             abort(404, message='Blog post not found')
         return blogPost
 
-@blueprint.route('/<blogPostId>', endpoint='edit_blog_post')
+@blueprint.route('/<slug>', endpoint='edit_blog_post')
 class EditBlogPostAPI(MethodView):
     @jwt_required
     @blueprint.arguments(BlogPostSchema(partial=True))
     @blueprint.response(BlogPostSchema)
-    def patch(self, args, blogPostId):
+    def patch(self, args, slug):
         '''Edit blog post'''
         try:
-            blogPost = BlogPost.get(id=blogPostId)
+            blogPost = BlogPost.get(slug = slug)
         except BlogPost.DoesNotExist:
             abort(404, message='Blog post not found')
         for field in args:
@@ -66,14 +66,14 @@ class EditBlogPostAPI(MethodView):
         blogPost.save()
         return blogPost
 
-@blueprint.route('/<blogPostId>', endpoint='delete_blog_post')
+@blueprint.route('/<slug>', endpoint='delete_blog_post')
 class DeleteBlogPostAPI(MethodView):
     @jwt_required
     @blueprint.response(BlogPostSchema)
-    def delete(self, blogPostId):
+    def delete(self, slug):
         '''Delete blog post'''
         try:
-            blogPost = BlogPost.get(id = blogPostId)
+            blogPost = BlogPost.get(slug = slug)
         except BlogPost.DoesNotExist:
             abort(404, message='Blog post not found')
         blogPost.delete_instance()
