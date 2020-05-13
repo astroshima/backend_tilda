@@ -31,8 +31,11 @@ class ListPublishedBlogPostsAPI(MethodView):
     @blueprint.response(BlogPostPageOutSchema)
     def get(self, pagination):
         '''List published blog posts'''
-        sortedPublishedBlogPosts = BlogPost.select().where(BlogPost.published).order_by(BlogPost.author)
+        sortedPublishedBlogPosts = self._getSortedPublishedBlogPosts()
         return paginate(sortedPublishedBlogPosts, pagination)
+
+    def _getSortedPublishedBlogPosts(self):
+        return BlogPost.select().where(BlogPost.published).order_by(BlogPost.author)
 
 @blueprint.route('/<slug>', endpoint='get_blog_post')
 class GetBlogPostAPI(MethodView):
