@@ -36,10 +36,19 @@ class ListPublishedBlogPostsAPI(MethodView):
         return paginatedBlogPosts
 
     def __getSortedPublishedBlogPosts(self):
-        return BlogPost.select().where(BlogPost.published).order_by(BlogPost.author)
+        allBlogPosts = self.__getAllBlogPosts()
+        publishedBlogPosts = self.__getPublishedBlogPosts(allBlogPosts)
+        sortedPublishedBlogPosts = self.__getSortedBlogPosts(publishedBlogPosts)
+        return sortedPublishedBlogPosts
 
     def __getAllBlogPosts(self):
         return BlogPost.select()
+
+    def __getPublishedBlogPosts(self, blogPosts):
+        return blogPosts.where(BlogPost.published)
+
+    def __getSortedBlogPosts(self, blogPosts):
+        return blogPosts.order_by(BlogPost.author)
 
     def __getPaginatedBlogPosts(self, sortedPublishedBlogPosts, pagination):
         return paginate(sortedPublishedBlogPosts, pagination)
