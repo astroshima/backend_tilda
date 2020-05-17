@@ -73,3 +73,17 @@ class DeleteBlogPostAPI(MethodView):
             abort(404, message='Blog post not found')
         blogPost.delete_instance()
         return blogPost
+
+@blueprint.route('/user/<userId>', endpoint='list_blog_posts_by_user')
+class ListBlogPostsByUserAPI(MethodView):
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(BlogPostPageOutSchema)
+    def get(self, pagination, userId):
+        '''List blog posts by user'''
+        try:
+            user = User.get(id=userId)
+        except User.DoesNotExist:
+            abort(404, message='User not found')
+        blogPostsByUser = BlogPost.select().where(BlogPost.author == user)
+        return paginate(blogPostsByUser, pagination)
+
