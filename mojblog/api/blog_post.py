@@ -34,6 +34,24 @@ class ListPublishedBlogPostsAPI(MethodView):
         sortedPublishedBlogPosts = BlogPost.select().where(BlogPost.published).order_by(BlogPost.author)
         return paginate(sortedPublishedBlogPosts, pagination)
 
+@blueprint.route('/<blog_post_id>', endpoint='get_blog_post_by_blog_post_id')
+class GetBlogPostByBlogPostIdAPI(MethodView):
+    @blueprint.response(BlogPostSchema)
+    def get(self, blog_post_id):
+        '''Get blog post by blog_post_id'''
+        try:
+            blogPost = BlogPost.get(id = blog_post_id)
+        except BlogPost.DoesNotExist:
+            abort(404, message='Blog post not found')
+        try:
+            blogPost2 = BlogPost.get( id = int(blog_post_id) + 1 )
+        except BlogPost.DoesNotExist:
+            abort(404, message='Blog post not found')
+        print(blogPost.slug)    #: prvi-naslov
+        print(blogPost2.slug)    #: drugi-blog-post
+        print(BlogPost.slug)    #: <TextField: BlogPost.slug>
+        return blogPost
+
 @blueprint.route('/<slug>', endpoint='get_blog_post')
 class GetBlogPostAPI(MethodView):
     @blueprint.response(BlogPostSchema)
