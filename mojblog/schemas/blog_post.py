@@ -15,5 +15,6 @@ class BlogPostSchema(BaseSchema):
     )
     author = fields.Nested(UserSchema, dump_only=True)
     published = fields.Boolean(description='Published', default=False)
+    imageURL = fields.URL(description='Image URL')
 
 PageOutSchema(BlogPostSchema, sys.modules[__name__])
