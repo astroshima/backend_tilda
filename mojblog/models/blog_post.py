@@ -14,6 +14,7 @@ class BlogPost(Model):
     )
     author = ForeignKeyField(User, backref='blogpost')
     published = BooleanField()
+    imageURL = TextField()
 
     def save(self, *args, **kwargs):
         if self.slug is None:
