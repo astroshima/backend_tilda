@@ -12,10 +12,10 @@ blueprint = Blueprint('blogpostsearch', 'blogpostsearch')
 class SearchBlogPostsByTitleApi(MethodView):
     @blueprint.arguments(BlogPostSearchSchema(), location='headers')
     @blueprint.response(BlogPostPageOutSchema)
-    def get(self, searchData):
+    def get(self, headersArgs):
         """Search blog posts by title"""
-        print(searchData)
-        titleParam = searchData.get('Search','')
+        print(headersArgs)
+        titleParam = headersArgs.get('Search','')
         sameTitlePartBlogPosts = BlogPost.select().where(BlogPost.published,
                                                         BlogPost.title.contains(titleParam)).order_by(BlogPost.author)
-        return paginate(sameTitlePartBlogPosts, searchData)
+        return paginate(sameTitlePartBlogPosts, headersArgs)
